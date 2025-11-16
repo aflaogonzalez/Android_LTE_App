@@ -25,11 +25,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     // --- INICIO: Variables para la galería de imágenes ---
-    private lateinit var imageSwitcher: ImageSwitcher
+    // Restaurando la lista de imágenes original que solicitaste.
     private val images = listOf(
-        R.drawable.foto1,
-        R.drawable.foto2,
-        R.drawable.foto3
+        R.drawable.foto1,     // Corresponde a foto1.jpeg
+        R.drawable.foto2,     // Corresponde a foto2.jpeg
+        R.drawable.foto3      // Corresponde a foto3.jpeg
     )
     private var currentImageIndex = 0
     // --- FIN: Variables para la galería de imágenes ---
@@ -62,10 +62,10 @@ class MainActivity : AppCompatActivity() {
 
         // --- INICIO: Lógica de la galería y personalización de la Toolbar ---
 
-        // Solo inicializa la galería si los controles existen (solo en modo portrait)
-        binding.appBarMain.contentMain.imageSwitcher?.let {
-            setupImageGallery()
-        }
+        // Detecta qué galería está visible (portrait o landscape) y la inicializa.
+        binding.appBarMain.contentMain.imageSwitcher?.let { setupImageGallery(it) }
+        // CORRECCIÓN: Se ha corregido el error tipográfico a 'appBarMain'.
+        binding.appBarMain.contentMain.imageSwitcherLand?.let { setupImageGallery(it) }
 
         binding.appBarMain.toolbarHamburgerIcon?.setOnClickListener {
             binding.drawerLayout?.openDrawer(GravityCompat.START)
@@ -93,9 +93,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupImageGallery() {
-        imageSwitcher = binding.appBarMain.contentMain.imageSwitcher!!
-
+    private fun setupImageGallery(imageSwitcher: ImageSwitcher) {
         imageSwitcher.setFactory {
             val imageView = ImageView(applicationContext)
             imageView.scaleType = ImageView.ScaleType.FIT_CENTER
@@ -104,30 +102,39 @@ class MainActivity : AppCompatActivity() {
             imageView
         }
 
-        // Añade animaciones de fundido para el cambio de imagen
         val fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
         val fadeOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
         imageSwitcher.inAnimation = fadeIn
         imageSwitcher.outAnimation = fadeOut
 
-        // Establece la imagen inicial
-        imageSwitcher.setImageResource(images[currentImageIndex])
+        // Asegurarse de que el índice es válido y la lista no está vacía antes de usarla
+        if (images.isNotEmpty() && currentImageIndex < images.size) {
+            imageSwitcher.setImageResource(images[currentImageIndex])
+        } else if (images.isNotEmpty()) {
+            currentImageIndex = 0 // Si el índice está fuera de rango, se resetea.
+            imageSwitcher.setImageResource(images[currentImageIndex])
+        }
 
-        // Configura el botón "Siguiente"
+        // Configura los botones para la galería PORTRAIT (horizontal)
         binding.appBarMain.contentMain.buttonNext?.setOnClickListener {
             currentImageIndex = (currentImageIndex + 1) % images.size
             imageSwitcher.setImageResource(images[currentImageIndex])
         }
 
-        // Configura el botón "Anterior"
         binding.appBarMain.contentMain.buttonPrev?.setOnClickListener {
             currentImageIndex = (currentImageIndex - 1 + images.size) % images.size
+            imageSwitcher.setImageResource(images[currentImageIndex])
+        }
+
+        // Configura el botón para la galería LANDSCAPE (vertical)
+        binding.appBarMain.contentMain.buttonDown?.setOnClickListener {
+            currentImageIndex = (currentImageIndex + 1) % images.size
             imageSwitcher.setImageResource(images[currentImageIndex])
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return true
+        return true // No se infla ningún menú para eliminar los 3 puntos.
     }
 
     override fun onSupportNavigateUp(): Boolean {
