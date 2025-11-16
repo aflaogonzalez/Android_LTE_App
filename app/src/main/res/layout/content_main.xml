@@ -8,21 +8,53 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment_content_main"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <!-- Contenedor principal para las 3 zonas, apiladas verticalmente -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/fragment_horizontal_margin"
-        android:layout_marginRight="@dimen/fragment_horizontal_margin"
         android:layout_weight="1"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/mobile_navigation" />
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/fragment_horizontal_margin">
 
+        <!-- Zona Superior -->
+        <FrameLayout
+            android:id="@+id/zone_top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#E0E0E0"/> <!-- Fondo temporal para visibilidad -->
+
+        <!-- Zona Central (Contenido Principal) -->
+        <FrameLayout
+            android:id="@+id/zone_middle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"> <!-- Más espacio para el contenido principal -->
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/nav_host_fragment_content_main"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/mobile_navigation" />
+        </FrameLayout>
+
+        <!-- Zona Inferior -->
+        <FrameLayout
+            android:id="@+id/zone_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#F0F0F0"/> <!-- Fondo temporal para visibilidad -->
+    </LinearLayout>
+
+    <!-- Barra de navegación inferior -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_navigation" />
+
 </LinearLayout>
