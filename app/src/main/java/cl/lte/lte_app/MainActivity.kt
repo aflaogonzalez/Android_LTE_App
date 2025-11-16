@@ -9,30 +9,31 @@ import android.widget.ImageSwitcher
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import cl.lte.lte_app.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private lateinit var navController: NavController
 
-    // --- INICIO: Variables para la galería de imágenes ---
-    // Restaurando la lista de imágenes original que solicitaste.
-    private val images = listOf(
-        R.drawable.foto1,     // Corresponde a foto1.jpeg
-        R.drawable.foto2,     // Corresponde a foto2.jpeg
-        R.drawable.foto3      // Corresponde a foto3.jpeg
+    // --- INICIO: Variables para la galería de imágenes SUPERIOR ---
+    private val imagesTop = listOf(
+        R.drawable.foto1,
+        R.drawable.foto2,
+        R.drawable.foto3
     )
-    private var currentImageIndex = 0
-    // --- FIN: Variables para la galería de imágenes ---
+    private var currentImageIndexTop = 0
+    // --- FIN: Variables para la galería de imágenes SUPERIOR ---
+
+    // --- INICIO: Variables para la galería de imágenes CENTRAL ---
+    private val imagesMiddle = listOf(
+        R.drawable.foto4,
+        R.drawable.foto5,
+        R.drawable.foto6
+    )
+    private var currentImageIndexMiddle = 0
+    // --- FIN: Variables para la galería de imágenes CENTRAL ---
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,49 +43,20 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-        navController = navHostFragment.navController
+        // --- INICIO: Lógica de las galerías ---
 
-        val topLevelDestinations = setOf(
-            R.id.nav_transform, R.id.nav_reflow, R.id.nav_slideshow, R.id.nav_settings
-        )
+        // Configura la galería SUPERIOR (Patrones nuevos)
+        binding.appBarMain.contentMain.imageSwitcher?.let { setupTopImageGallery(it) }
+        binding.appBarMain.contentMain.imageSwitcherLand?.let { setupTopImageGallery(it) }
 
-        appBarConfiguration = AppBarConfiguration(
-            topLevelDestinations,
-            binding.drawerLayout
-        )
-
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.navView?.setupWithNavController(navController)
-        binding.appBarMain.contentMain.bottomNavView?.setupWithNavController(navController)
-
-        // --- INICIO: Lógica de la galería y personalización de la Toolbar ---
-
-        // Detecta qué galería está visible (portrait o landscape) y la inicializa.
-        binding.appBarMain.contentMain.imageSwitcher?.let { setupImageGallery(it) }
-        // CORRECCIÓN: Se ha corregido el error tipográfico a 'appBarMain'.
-        binding.appBarMain.contentMain.imageSwitcherLand?.let { setupImageGallery(it) }
+        // Configura la galería CENTRAL (Puntos Nuevos)
+        binding.appBarMain.contentMain.imageSwitcherMiddle?.let { setupMiddleImageGallery(it) }
 
         binding.appBarMain.toolbarHamburgerIcon?.setOnClickListener {
             binding.drawerLayout?.openDrawer(GravityCompat.START)
         }
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            val isTopLevel = appBarConfiguration.topLevelDestinations.contains(destination.id)
-
-            if (isTopLevel) {
-                binding.appBarMain.toolbar.navigationIcon = null
-                binding.appBarMain.toolbarLogoLayout?.visibility = View.VISIBLE
-                binding.appBarMain.toolbarHamburgerIcon?.visibility = View.VISIBLE
-            } else {
-                binding.appBarMain.toolbarLogoLayout?.visibility = View.GONE
-                binding.appBarMain.toolbarHamburgerIcon?.visibility = View.GONE
-            }
-        }
-
-        // --- FIN: Lógica de la galería y personalización de la Toolbar ---
+        // --- FIN: Lógica de las galerías ---
 
         binding.appBarMain.fab?.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -93,12 +65,51 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupImageGallery(imageSwitcher: ImageSwitcher) {
+    private fun setupTopImageGallery(imageSwitcher: ImageSwitcher) {
+        setupGenericImageGallery(
+            imageSwitcher = imageSwitcher,
+            images = imagesTop,
+            currentIndex = currentImageIndexTop,
+            nextButton = binding.appBarMain.contentMain.buttonNext,
+            prevButton = binding.appBarMain.contentMain.buttonPrev,
+            downButton = binding.appBarMain.contentMain.buttonDown,
+            onIndexChanged = { newIndex -> currentImageIndexTop = newIndex }
+        )
+    }
+
+    private fun setupMiddleImageGallery(imageSwitcher: ImageSwitcher) {
+        setupGenericImageGallery(
+            imageSwitcher = imageSwitcher,
+            images = imagesMiddle,
+            currentIndex = currentImageIndexMiddle,
+            nextButton = binding.appBarMain.contentMain.buttonNextMiddle,
+            prevButton = binding.appBarMain.contentMain.buttonPrevMiddle,
+            // --- CORRECCIÓN: Se activa el botón de flecha abajo para el modo landscape ---
+            downButton = binding.appBarMain.contentMain.buttonDownMiddle,
+            onIndexChanged = { newIndex -> currentImageIndexMiddle = newIndex }
+        )
+    }
+
+    private fun setupGenericImageGallery(
+        imageSwitcher: ImageSwitcher,
+        images: List<Int>,
+        currentIndex: Int,
+        nextButton: View?,
+        prevButton: View?,
+        downButton: View?,
+        onIndexChanged: (Int) -> Unit
+    ) {
+        var localIndex = currentIndex
+
         imageSwitcher.setFactory {
             val imageView = ImageView(applicationContext)
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             imageView.layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+            val paddingInDp = 8
+            val scale = resources.displayMetrics.density
+            val paddingInPx = (paddingInDp * scale + 0.5f).toInt()
+            imageView.setPadding(paddingInPx, paddingInPx, paddingInPx, paddingInPx)
             imageView
         }
 
@@ -107,37 +118,43 @@ class MainActivity : AppCompatActivity() {
         imageSwitcher.inAnimation = fadeIn
         imageSwitcher.outAnimation = fadeOut
 
-        // Asegurarse de que el índice es válido y la lista no está vacía antes de usarla
-        if (images.isNotEmpty() && currentImageIndex < images.size) {
-            imageSwitcher.setImageResource(images[currentImageIndex])
+        if (images.isNotEmpty() && localIndex < images.size) {
+            imageSwitcher.setImageResource(images[localIndex])
         } else if (images.isNotEmpty()) {
-            currentImageIndex = 0 // Si el índice está fuera de rango, se resetea.
-            imageSwitcher.setImageResource(images[currentImageIndex])
+            localIndex = 0
+            onIndexChanged(localIndex)
+            imageSwitcher.setImageResource(images[localIndex])
         }
 
-        // Configura los botones para la galería PORTRAIT (horizontal)
-        binding.appBarMain.contentMain.buttonNext?.setOnClickListener {
-            currentImageIndex = (currentImageIndex + 1) % images.size
-            imageSwitcher.setImageResource(images[currentImageIndex])
+        nextButton?.setOnClickListener {
+            if (images.isNotEmpty()) {
+                localIndex = (localIndex + 1) % images.size
+                onIndexChanged(localIndex)
+                imageSwitcher.setImageResource(images[localIndex])
+            }
         }
 
-        binding.appBarMain.contentMain.buttonPrev?.setOnClickListener {
-            currentImageIndex = (currentImageIndex - 1 + images.size) % images.size
-            imageSwitcher.setImageResource(images[currentImageIndex])
+        prevButton?.setOnClickListener {
+            if (images.isNotEmpty()) {
+                localIndex = (localIndex - 1 + images.size) % images.size
+                onIndexChanged(localIndex)
+                imageSwitcher.setImageResource(images[localIndex])
+            }
         }
 
-        // Configura el botón para la galería LANDSCAPE (vertical)
-        binding.appBarMain.contentMain.buttonDown?.setOnClickListener {
-            currentImageIndex = (currentImageIndex + 1) % images.size
-            imageSwitcher.setImageResource(images[currentImageIndex])
+        downButton?.setOnClickListener {
+            if (images.isNotEmpty()) {
+                localIndex = (localIndex + 1) % images.size
+                onIndexChanged(localIndex)
+                imageSwitcher.setImageResource(images[localIndex])
+            }
         }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return true // No se infla ningún menú para eliminar los 3 puntos.
+        return true
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
+    // onSupportNavigateUp ya no es necesario porque no hay NavController
 }

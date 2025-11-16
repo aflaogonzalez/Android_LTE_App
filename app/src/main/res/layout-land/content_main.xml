@@ -47,29 +47,46 @@
 
         </LinearLayout>
 
-        <!-- Zona Central (Contenido Principal) -->
-        <FrameLayout
+        <!-- Zona Central: Segunda galería vertical -->
+        <LinearLayout
             android:id="@+id/zone_middle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"> <!-- Más espacio para el contenido principal -->
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/nav_host_fragment_content_main"
-                android:name="androidx.navigation.fragment.NavHostFragment"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Puntos Nuevos"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"/>
+
+            <ImageSwitcher
+                android:id="@+id/image_switcher_middle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:defaultNavHost="true"
-                app:navGraph="@navigation/mobile_navigation" />
-        </FrameLayout>
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-        <!-- Zona Derecha (equivalente a la Zona Inferior del modo vertical) -->
+            <ImageButton
+                android:id="@+id/button_down_middle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_down" />
+
+        </LinearLayout>
+
+        <!-- Zona Derecha (Restaurada) -->
         <FrameLayout
             android:id="@+id/zone_bottom"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#F0F0F0"/> <!-- Fondo temporal para visibilidad -->
+            android:background="#F0F0F0"/>
+
     </LinearLayout>
 
 </LinearLayout>
