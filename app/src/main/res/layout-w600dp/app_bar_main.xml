@@ -36,14 +36,17 @@
                     android:adjustViewBounds="true"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="La Tía Encanto"
                     android:textColor="@android:color/white"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
             </LinearLayout>
-            
+
             <ImageButton
                 android:id="@+id/toolbar_hamburger_icon"
                 android:layout_width="?attr/actionBarSize"
@@ -70,4 +73,5 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/fab_content_description"
         app:srcCompat="@android:drawable/ic_dialog_email" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

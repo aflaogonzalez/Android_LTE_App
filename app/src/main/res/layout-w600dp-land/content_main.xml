@@ -44,15 +44,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guideline_left" />
 
-    <ImageView
-        android:id="@+id/image_switcher_land"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="fitCenter"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/title_top"
         app:layout_constraintBottom_toTopOf="@id/button_down"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline_left" />
+        app:layout_constraintEnd_toStartOf="@id/guideline_left">
+
+        <ImageView
+            android:id="@+id/image_view_top_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/image_view_top_2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
 
     <!-- ### ZONA CENTRAL ### -->
     <TextView
@@ -76,15 +90,29 @@
         app:layout_constraintStart_toEndOf="@id/guideline_left"
         app:layout_constraintEnd_toStartOf="@id/guideline_right" />
 
-    <ImageView
-        android:id="@+id/image_switcher_middle"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="fitCenter"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/title_middle"
         app:layout_constraintBottom_toTopOf="@id/button_down_middle"
         app:layout_constraintStart_toEndOf="@id/guideline_left"
-        app:layout_constraintEnd_toStartOf="@id/guideline_right" />
+        app:layout_constraintEnd_toStartOf="@id/guideline_right">
+
+        <ImageView
+            android:id="@+id/image_view_middle_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/image_view_middle_2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
 
     <!-- ### ZONA DERECHA ### -->
     <TextView
@@ -108,14 +136,28 @@
         app:layout_constraintStart_toEndOf="@id/guideline_right"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/image_switcher_bottom_land"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="fitCenter"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/title_bottom"
         app:layout_constraintBottom_toTopOf="@id/button_down_bottom"
         app:layout_constraintStart_toEndOf="@id/guideline_right"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/image_view_bottom_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/image_view_bottom_2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
