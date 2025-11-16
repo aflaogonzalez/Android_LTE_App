@@ -25,6 +25,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        // Muestra el logo en la Toolbar
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setLogo(R.drawable.logo)
+        supportActionBar?.setDisplayUseLogoEnabled(true)
+
         binding.appBarMain.fab?.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
