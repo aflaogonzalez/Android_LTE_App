@@ -16,37 +16,53 @@
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/fragment_horizontal_margin">
 
-        <!-- Zona Superior: Carrusel de imágenes -->
-        <RelativeLayout
+        <!-- Zona Superior: Carrusel de imágenes con título -->
+        <LinearLayout
             android:id="@+id/zone_top"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
 
-            <ImageSwitcher
-                android:id="@+id/image_switcher"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Patrones nuevos"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:layout_marginBottom="4dp"/>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
-            <ImageButton
-                android:id="@+id/button_prev"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_arrow_left" />
+                <ImageSwitcher
+                    android:id="@+id/image_switcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-            <ImageButton
-                android:id="@+id/button_next"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_arrow_right" />
+                <ImageButton
+                    android:id="@+id/button_prev"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_arrow_left" />
 
-        </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/button_next"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_arrow_right" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <!-- Zona Central (Contenido Principal) -->
         <FrameLayout

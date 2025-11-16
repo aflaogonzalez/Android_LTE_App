@@ -27,9 +27,9 @@ class MainActivity : AppCompatActivity() {
     // --- INICIO: Variables para la galería de imágenes ---
     private lateinit var imageSwitcher: ImageSwitcher
     private val images = listOf(
-        R.drawable.logo, // REEMPLAZA ESTO con tu primera imagen
-        R.drawable.ic_menu, // REEMPLAZA ESTO con tu segunda imagen
-        R.drawable.ic_arrow_right // REEMPLAZA ESTO con tu tercera imagen
+        R.drawable.foto1,
+        R.drawable.foto2,
+        R.drawable.foto3
     )
     private var currentImageIndex = 0
     // --- FIN: Variables para la galería de imágenes ---
