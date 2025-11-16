@@ -25,7 +25,7 @@
         android:id="@+id/content_main"
         layout="@layout/content_main" />
 
-    <!-- This CoordinatorLayout is to dodge the BottomNavigationView when the Snackbar is shown -->
+    <!-- Este CoordinatorLayout es para esquivar el BottomNavigationView cuando se muestra el Snackbar -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

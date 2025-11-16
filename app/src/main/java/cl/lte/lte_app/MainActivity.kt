@@ -59,12 +59,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val result = super.onCreateOptionsMenu(menu)
-        // Using findViewById because NavigationView exists in different layout files
-        // between w600dp and w1240dp
+        // Usando findViewById porque NavigationView existe en diferentes archivos de diseño
+        // entre w600dp y w1240dp
         val navView: NavigationView? = findViewById(R.id.nav_view)
         if (navView == null) {
-            // The navigation drawer already has the items including the items in the overflow menu
-            // We only inflate the overflow menu if the navigation drawer isn't visible
+            // El menú lateral de navegación ya tiene los elementos, incluyendo los elementos en el menú de desbordamiento
+            // Solo inflamos el menú de desbordamiento si el menú lateral de navegación no está visible
             menuInflater.inflate(R.menu.overflow, menu)
         }
         return result
