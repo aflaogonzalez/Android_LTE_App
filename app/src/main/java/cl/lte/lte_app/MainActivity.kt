@@ -2,46 +2,28 @@ package cl.lte.lte_app
 
 import android.os.Bundle
 import android.view.Menu
-import android.view.View
-import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
-import android.widget.ImageSwitcher
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import cl.lte.lte_app.databinding.ActivityMainBinding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    // --- INICIO: Variables para la galería de imágenes SUPERIOR ---
-    private val imagesTop = listOf(
-        R.drawable.foto1,
-        R.drawable.foto2,
-        R.drawable.foto3
-    )
+    // --- INICIO: Variables para las galerías (restauradas) ---
+    private val imagesTop = listOf(R.drawable.foto1, R.drawable.foto2, R.drawable.foto3)
     private var currentImageIndexTop = 0
-    // --- FIN: Variables para la galería de imágenes SUPERIOR ---
 
-    // --- INICIO: Variables para la galería de imágenes CENTRAL ---
-    private val imagesMiddle = listOf(
-        R.drawable.foto4,
-        R.drawable.foto5,
-        R.drawable.foto6
-    )
+    private val imagesMiddle = listOf(R.drawable.foto4, R.drawable.foto5, R.drawable.foto6)
     private var currentImageIndexMiddle = 0
-    // --- FIN: Variables para la galería de imágenes CENTRAL ---
 
-    // --- INICIO: Variables para la galería de imágenes INFERIOR ---
-    private val imagesBottom = listOf(
-        R.drawable.foto7,
-        R.drawable.foto8,
-        R.drawable.foto9
-    )
+    private val imagesBottom = listOf(R.drawable.foto7, R.drawable.foto8, R.drawable.foto9)
     private var currentImageIndexBottom = 0
-    // --- FIN: Variables para la galería de imágenes INFERIOR ---
+    // --- FIN: Variables para las galerías ---
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,16 +36,15 @@ class MainActivity : AppCompatActivity() {
 
         // --- INICIO: Lógica de las galerías ---
 
-        // Configura la galería SUPERIOR (Patrones nuevos)
-        binding.appBarMain.contentMain.imageSwitcher?.let { setupTopImageGallery(it) }
-        binding.appBarMain.contentMain.imageSwitcherLand?.let { setupTopImageGallery(it) }
+        // Carga inicial de las imágenes
+        updateImage(binding.appBarMain.contentMain.imageSwitcher, imagesTop, currentImageIndexTop)
+        updateImage(binding.appBarMain.contentMain.imageSwitcherLand, imagesTop, currentImageIndexTop)
+        updateImage(binding.appBarMain.contentMain.imageSwitcherMiddle, imagesMiddle, currentImageIndexMiddle)
+        updateImage(binding.appBarMain.contentMain.imageSwitcherBottom, imagesBottom, currentImageIndexBottom)
+        updateImage(binding.appBarMain.contentMain.imageSwitcherBottomLand, imagesBottom, currentImageIndexBottom)
 
-        // Configura la galería CENTRAL (Puntos Nuevos)
-        binding.appBarMain.contentMain.imageSwitcherMiddle?.let { setupMiddleImageGallery(it) }
-
-        // Configura la galería INFERIOR (Noticias)
-        binding.appBarMain.contentMain.imageSwitcherBottom?.let { setupBottomImageGallery(it) }
-        binding.appBarMain.contentMain.imageSwitcherBottomLand?.let { setupBottomImageGallery(it) }
+        // Configuración de los botones
+        setupGalleryControls()
 
         binding.appBarMain.toolbarHamburgerIcon?.setOnClickListener {
             binding.drawerLayout?.openDrawer(GravityCompat.START)
@@ -78,105 +59,68 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupTopImageGallery(imageSwitcher: ImageSwitcher) {
-        setupGenericImageGallery(
-            imageSwitcher = imageSwitcher,
-            images = imagesTop,
-            currentIndex = currentImageIndexTop,
-            nextButton = binding.appBarMain.contentMain.buttonNext,
-            prevButton = binding.appBarMain.contentMain.buttonPrev,
-            downButton = binding.appBarMain.contentMain.buttonDown,
-            onIndexChanged = { newIndex -> currentImageIndexTop = newIndex }
-        )
+    private fun setupGalleryControls() {
+        val content = binding.appBarMain.contentMain
+
+        // Galería Superior
+        content.buttonNext?.setOnClickListener {
+            currentImageIndexTop = (currentImageIndexTop + 1) % imagesTop.size
+            updateImage(content.imageSwitcher, imagesTop, currentImageIndexTop)
+            updateImage(content.imageSwitcherLand, imagesTop, currentImageIndexTop)
+        }
+        content.buttonPrev?.setOnClickListener {
+            currentImageIndexTop = (currentImageIndexTop - 1 + imagesTop.size) % imagesTop.size
+            updateImage(content.imageSwitcher, imagesTop, currentImageIndexTop)
+            updateImage(content.imageSwitcherLand, imagesTop, currentImageIndexTop)
+        }
+        content.buttonDown?.setOnClickListener {
+            currentImageIndexTop = (currentImageIndexTop + 1) % imagesTop.size
+            updateImage(content.imageSwitcherLand, imagesTop, currentImageIndexTop)
+        }
+
+        // Galería Central
+        content.buttonNextMiddle?.setOnClickListener {
+            currentImageIndexMiddle = (currentImageIndexMiddle + 1) % imagesMiddle.size
+            updateImage(content.imageSwitcherMiddle, imagesMiddle, currentImageIndexMiddle)
+        }
+        content.buttonPrevMiddle?.setOnClickListener {
+            currentImageIndexMiddle = (currentImageIndexMiddle - 1 + imagesMiddle.size) % imagesMiddle.size
+            updateImage(content.imageSwitcherMiddle, imagesMiddle, currentImageIndexMiddle)
+        }
+        content.buttonDownMiddle?.setOnClickListener {
+            currentImageIndexMiddle = (currentImageIndexMiddle + 1) % imagesMiddle.size
+            updateImage(content.imageSwitcherMiddle, imagesMiddle, currentImageIndexMiddle)
+        }
+
+        // Galería Inferior
+        content.buttonNextBottom?.setOnClickListener {
+            currentImageIndexBottom = (currentImageIndexBottom + 1) % imagesBottom.size
+            updateImage(content.imageSwitcherBottom, imagesBottom, currentImageIndexBottom)
+            updateImage(content.imageSwitcherBottomLand, imagesBottom, currentImageIndexBottom)
+        }
+        content.buttonPrevBottom?.setOnClickListener {
+            currentImageIndexBottom = (currentImageIndexBottom - 1 + imagesBottom.size) % imagesBottom.size
+            updateImage(content.imageSwitcherBottom, imagesBottom, currentImageIndexBottom)
+            updateImage(content.imageSwitcherBottomLand, imagesBottom, currentImageIndexBottom)
+        }
+        content.buttonDownBottom?.setOnClickListener {
+            currentImageIndexBottom = (currentImageIndexBottom + 1) % imagesBottom.size
+            updateImage(content.imageSwitcherBottomLand, imagesBottom, currentImageIndexBottom)
+        }
     }
 
-    private fun setupMiddleImageGallery(imageSwitcher: ImageSwitcher) {
-        setupGenericImageGallery(
-            imageSwitcher = imageSwitcher,
-            images = imagesMiddle,
-            currentIndex = currentImageIndexMiddle,
-            nextButton = binding.appBarMain.contentMain.buttonNextMiddle,
-            prevButton = binding.appBarMain.contentMain.buttonPrevMiddle,
-            downButton = binding.appBarMain.contentMain.buttonDownMiddle,
-            onIndexChanged = { newIndex -> currentImageIndexMiddle = newIndex }
-        )
-    }
-
-    private fun setupBottomImageGallery(imageSwitcher: ImageSwitcher) {
-        setupGenericImageGallery(
-            imageSwitcher = imageSwitcher,
-            images = imagesBottom,
-            currentIndex = currentImageIndexBottom,
-            nextButton = binding.appBarMain.contentMain.buttonNextBottom,
-            prevButton = binding.appBarMain.contentMain.buttonPrevBottom,
-            downButton = binding.appBarMain.contentMain.buttonDownBottom,
-            onIndexChanged = { newIndex -> currentImageIndexBottom = newIndex }
-        )
-    }
-
-    private fun setupGenericImageGallery(
-        imageSwitcher: ImageSwitcher,
-        images: List<Int>,
-        currentIndex: Int,
-        nextButton: View?,
-        prevButton: View?,
-        downButton: View?,
-        onIndexChanged: (Int) -> Unit
-    ) {
-        var localIndex = currentIndex
-
-        imageSwitcher.setFactory {
-            val imageView = ImageView(applicationContext)
-            // --- CORRECCIÓN: Usando FIT_CENTER para que la imagen se vea completa sin recortes ---
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-            imageView.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-            // --- Se elimina el padding que ya no es necesario con FIT_CENTER ---
-            imageView
-        }
-
-        val fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
-        val fadeOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
-        imageSwitcher.inAnimation = fadeIn
-        imageSwitcher.outAnimation = fadeOut
-
-        if (images.isNotEmpty() && localIndex < images.size) {
-            imageSwitcher.setImageResource(images[localIndex])
-        } else if (images.isNotEmpty()) {
-            localIndex = 0
-            onIndexChanged(localIndex)
-            imageSwitcher.setImageResource(images[localIndex])
-        }
-
-        nextButton?.setOnClickListener {
-            if (images.isNotEmpty()) {
-                localIndex = (localIndex + 1) % images.size
-                onIndexChanged(localIndex)
-                imageSwitcher.setImageResource(images[localIndex])
-            }
-        }
-
-        prevButton?.setOnClickListener {
-            if (images.isNotEmpty()) {
-                localIndex = (localIndex - 1 + images.size) % images.size
-                onIndexChanged(localIndex)
-                imageSwitcher.setImageResource(images[localIndex])
-            }
-        }
-
-        downButton?.setOnClickListener {
-            if (images.isNotEmpty()) {
-                localIndex = (localIndex + 1) % images.size
-                onIndexChanged(localIndex)
-                imageSwitcher.setImageResource(images[localIndex])
+    private fun updateImage(imageView: ImageView?, images: List<Int>, index: Int) {
+        imageView?.let { iv ->
+            if (images.isNotEmpty() && index < images.size) {
+                Glide.with(this)
+                    .load(images[index])
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(iv)
             }
         }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         return true
     }
-
-    // onSupportNavigateUp ya no es necesario porque no hay NavController
 }

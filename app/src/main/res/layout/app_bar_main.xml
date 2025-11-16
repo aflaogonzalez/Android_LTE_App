@@ -28,12 +28,15 @@
                 android:orientation="horizontal"
                 android:layout_marginStart="8dp">
 
+                <!-- PASO DE DIAGNÓSTICO: Se comenta el ImageView del logo para descartar un error de memoria -->
+                <!--
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/logo"
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"/>
+                -->
 
                 <TextView
                     android:layout_width="wrap_content"
