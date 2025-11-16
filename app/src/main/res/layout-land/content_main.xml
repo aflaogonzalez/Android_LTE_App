@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_main">
+
+    <!-- Contenedor principal para las 3 zonas, apiladas horizontalmente -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/fragment_horizontal_margin">
+
+        <!-- Zona Izquierda (equivalente a la Zona Superior del modo vertical) -->
+        <FrameLayout
+            android:id="@+id/zone_top"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#E0E0E0"/> <!-- Fondo temporal para visibilidad -->
+
+        <!-- Zona Central (Contenido Principal) -->
+        <FrameLayout
+            android:id="@+id/zone_middle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"> <!-- Más espacio para el contenido principal -->
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/nav_host_fragment_content_main"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/mobile_navigation" />
+        </FrameLayout>
+
+        <!-- Zona Derecha (equivalente a la Zona Inferior del modo vertical) -->
+        <FrameLayout
+            android:id="@+id/zone_bottom"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#F0F0F0"/> <!-- Fondo temporal para visibilidad -->
+    </LinearLayout>
+
+    <!-- La barra de navegación inferior se omite intencionadamente en el modo landscape -->
+
+</LinearLayout>

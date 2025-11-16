@@ -2,12 +2,14 @@ package cl.lte.lte_app
 
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.FrameLayout
+import android.widget.ImageSwitcher
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -22,20 +24,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
 
+    // --- INICIO: Variables para la galería de imágenes ---
+    private lateinit var imageSwitcher: ImageSwitcher
+    private val images = listOf(
+        R.drawable.logo, // REEMPLAZA ESTO con tu primera imagen
+        R.drawable.ic_menu, // REEMPLAZA ESTO con tu segunda imagen
+        R.drawable.ic_arrow_right // REEMPLAZA ESTO con tu tercera imagen
+    )
+    private var currentImageIndex = 0
+    // --- FIN: Variables para la galería de imágenes ---
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        // Oculta el título predeterminado, ya que usamos nuestro propio diseño
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         navController = navHostFragment.navController
 
-        // Define los destinos de nivel superior (las pantallas principales)
         val topLevelDestinations = setOf(
             R.id.nav_transform, R.id.nav_reflow, R.id.nav_slideshow, R.id.nav_settings
         )
@@ -45,37 +55,36 @@ class MainActivity : AppCompatActivity() {
             binding.drawerLayout
         )
 
-        // Configura la barra de acción para que funcione con NavController.
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        // Conecta el Navigation Drawer y el Bottom Navigation View con el NavController
         binding.navView?.setupWithNavController(navController)
         binding.appBarMain.contentMain.bottomNavView?.setupWithNavController(navController)
 
-        // ---- INICIO DE LA PERSONALIZACIÓN DE LA TOOLBAR ----
+        // --- INICIO: Lógica de la galería y personalización de la Toolbar ---
 
-        // Asigna la acción de abrir el cajón a nuestro botón de hamburguesa personalizado (el de la derecha)
+        // Solo inicializa la galería si los controles existen (solo en modo portrait)
+        binding.appBarMain.contentMain.imageSwitcher?.let {
+            setupImageGallery()
+        }
+
         binding.appBarMain.toolbarHamburgerIcon?.setOnClickListener {
             binding.drawerLayout?.openDrawer(GravityCompat.START)
         }
 
-        // Escucha los cambios de destino para mostrar/ocultar los elementos correctos
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isTopLevel = appBarConfiguration.topLevelDestinations.contains(destination.id)
 
             if (isTopLevel) {
-                // ESTAMOS EN UNA PANTALLA PRINCIPAL
                 binding.appBarMain.toolbar.navigationIcon = null
                 binding.appBarMain.toolbarLogoLayout?.visibility = View.VISIBLE
                 binding.appBarMain.toolbarHamburgerIcon?.visibility = View.VISIBLE
             } else {
-                // ESTAMOS EN UNA PANTALLA SECUNDARIA
                 binding.appBarMain.toolbarLogoLayout?.visibility = View.GONE
                 binding.appBarMain.toolbarHamburgerIcon?.visibility = View.GONE
             }
         }
 
-        // ---- FIN DE LA PERSONALIZACIÓN ----
+        // --- FIN: Lógica de la galería y personalización de la Toolbar ---
 
         binding.appBarMain.fab?.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -84,9 +93,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Se sobreescribe para evitar que se infle el menú de 3 puntos.
+    private fun setupImageGallery() {
+        imageSwitcher = binding.appBarMain.contentMain.imageSwitcher!!
+
+        imageSwitcher.setFactory {
+            val imageView = ImageView(applicationContext)
+            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+            imageView.layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+            imageView
+        }
+
+        // Añade animaciones de fundido para el cambio de imagen
+        val fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
+        val fadeOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
+        imageSwitcher.inAnimation = fadeIn
+        imageSwitcher.outAnimation = fadeOut
+
+        // Establece la imagen inicial
+        imageSwitcher.setImageResource(images[currentImageIndex])
+
+        // Configura el botón "Siguiente"
+        binding.appBarMain.contentMain.buttonNext?.setOnClickListener {
+            currentImageIndex = (currentImageIndex + 1) % images.size
+            imageSwitcher.setImageResource(images[currentImageIndex])
+        }
+
+        // Configura el botón "Anterior"
+        binding.appBarMain.contentMain.buttonPrev?.setOnClickListener {
+            currentImageIndex = (currentImageIndex - 1 + images.size) % images.size
+            imageSwitcher.setImageResource(images[currentImageIndex])
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // No se infla ningún menú aquí para eliminar los 3 puntos.
         return true
     }
 

@@ -16,13 +16,37 @@
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/fragment_horizontal_margin">
 
-        <!-- Zona Superior -->
-        <FrameLayout
+        <!-- Zona Superior: Carrusel de imágenes -->
+        <RelativeLayout
             android:id="@+id/zone_top"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#E0E0E0"/> <!-- Fondo temporal para visibilidad -->
+            android:layout_weight="1">
+
+            <ImageSwitcher
+                android:id="@+id/image_switcher"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageButton
+                android:id="@+id/button_prev"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_left" />
+
+            <ImageButton
+                android:id="@+id/button_next"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_right" />
+
+        </RelativeLayout>
 
         <!-- Zona Central (Contenido Principal) -->
         <FrameLayout
