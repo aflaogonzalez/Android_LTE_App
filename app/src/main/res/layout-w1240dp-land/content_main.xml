@@ -79,13 +79,37 @@
 
         </LinearLayout>
 
-        <!-- Zona Derecha (Restaurada) -->
-        <FrameLayout
+        <!-- Zona Derecha: Tercera galería vertical -->
+        <LinearLayout
             android:id="@+id/zone_bottom"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#F0F0F0"/>
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Noticias"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"/>
+
+            <ImageSwitcher
+                android:id="@+id/image_switcher_bottom_land"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/button_down_bottom"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_down" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

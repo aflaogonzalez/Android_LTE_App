@@ -34,6 +34,15 @@ class MainActivity : AppCompatActivity() {
     private var currentImageIndexMiddle = 0
     // --- FIN: Variables para la galería de imágenes CENTRAL ---
 
+    // --- INICIO: Variables para la galería de imágenes INFERIOR ---
+    private val imagesBottom = listOf(
+        R.drawable.foto7,
+        R.drawable.foto8,
+        R.drawable.foto9
+    )
+    private var currentImageIndexBottom = 0
+    // --- FIN: Variables para la galería de imágenes INFERIOR ---
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +60,10 @@ class MainActivity : AppCompatActivity() {
 
         // Configura la galería CENTRAL (Puntos Nuevos)
         binding.appBarMain.contentMain.imageSwitcherMiddle?.let { setupMiddleImageGallery(it) }
+
+        // Configura la galería INFERIOR (Noticias)
+        binding.appBarMain.contentMain.imageSwitcherBottom?.let { setupBottomImageGallery(it) }
+        binding.appBarMain.contentMain.imageSwitcherBottomLand?.let { setupBottomImageGallery(it) }
 
         binding.appBarMain.toolbarHamburgerIcon?.setOnClickListener {
             binding.drawerLayout?.openDrawer(GravityCompat.START)
@@ -84,9 +97,20 @@ class MainActivity : AppCompatActivity() {
             currentIndex = currentImageIndexMiddle,
             nextButton = binding.appBarMain.contentMain.buttonNextMiddle,
             prevButton = binding.appBarMain.contentMain.buttonPrevMiddle,
-            // --- CORRECCIÓN: Se activa el botón de flecha abajo para el modo landscape ---
             downButton = binding.appBarMain.contentMain.buttonDownMiddle,
             onIndexChanged = { newIndex -> currentImageIndexMiddle = newIndex }
+        )
+    }
+
+    private fun setupBottomImageGallery(imageSwitcher: ImageSwitcher) {
+        setupGenericImageGallery(
+            imageSwitcher = imageSwitcher,
+            images = imagesBottom,
+            currentIndex = currentImageIndexBottom,
+            nextButton = binding.appBarMain.contentMain.buttonNextBottom,
+            prevButton = binding.appBarMain.contentMain.buttonPrevBottom,
+            downButton = binding.appBarMain.contentMain.buttonDownBottom,
+            onIndexChanged = { newIndex -> currentImageIndexBottom = newIndex }
         )
     }
 
@@ -103,13 +127,11 @@ class MainActivity : AppCompatActivity() {
 
         imageSwitcher.setFactory {
             val imageView = ImageView(applicationContext)
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            // --- CORRECCIÓN: Usando FIT_CENTER para que la imagen se vea completa sin recortes ---
+            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
             imageView.layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-            val paddingInDp = 8
-            val scale = resources.displayMetrics.density
-            val paddingInPx = (paddingInDp * scale + 0.5f).toInt()
-            imageView.setPadding(paddingInPx, paddingInPx, paddingInPx, paddingInPx)
+            // --- Se elimina el padding que ya no es necesario con FIT_CENTER ---
             imageView
         }
 
